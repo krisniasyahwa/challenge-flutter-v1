@@ -1,7 +1,12 @@
-import 'dart:async'; 
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:movie_filmku/providers/detail_movie_provider.dart';
+import 'package:movie_filmku/providers/now_playing_provider.dart';
+import 'package:movie_filmku/providers/popular_cast_provider.dart';
+import 'package:movie_filmku/providers/popular_movie_provider.dart';
 import 'package:movie_filmku/theme.dart';
 import 'package:movie_filmku/widget/button_auth.dart';
+import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,12 +18,22 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    Timer(
-      Duration(seconds: 5),
-      () => Navigator.pushNamed(context, '/login'), 
-    );
+    getInit();
 
     super.initState();
+  }
+
+  getInit() async {
+    await Provider.of<PopularMovieProvider>(context, listen: false)
+        .getPopularMovie();
+    await Provider.of<CastProvider>(context, listen: false).getPopularCast();
+    await Provider.of<NowPlayingProvider>(context, listen: false)
+        .getNowPlaying();
+    await Provider.of<DetailMovieProvider>(context, listen: false)
+        .getDetailMovie();
+    await Provider.of<NowPlayingProvider>(context, listen: false)
+        .getNowPlaying();
+    Navigator.pushNamed(context, '/login');
   }
 
   Widget build(BuildContext context) {
@@ -124,8 +139,6 @@ class _SplashScreenState extends State<SplashScreen> {
         ],
       );
     }
-
-    
 
     return Scaffold(
       backgroundColor: backgroundColor1,

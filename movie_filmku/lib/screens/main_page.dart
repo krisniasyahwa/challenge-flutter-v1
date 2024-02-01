@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:movie_filmku/providers/new_coming_provider.dart';
+import 'package:movie_filmku/providers/popular_cast_provider.dart';
+import 'package:movie_filmku/providers/popular_movie_provider.dart';
 import 'package:movie_filmku/theme.dart';
 import 'package:movie_filmku/widget/actors_widget.dart';
 import 'package:movie_filmku/widget/card_show_movie.dart';
 import 'package:movie_filmku/widget/card_popular_movie.dart';
 import 'package:movie_filmku/screens/detail_movie_page.dart';
+import 'package:movie_filmku/providers/now_playing_provider.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -17,6 +22,15 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    NowPlayingProvider nowPlayingProvider =
+        Provider.of<NowPlayingProvider>(context);
+    CastProvider castProvider = Provider.of<CastProvider>(context);
+    PopularMovieProvider popularMovieProvider =
+        Provider.of<PopularMovieProvider>(context);
+    NewComingProvider newComingProvider =
+        Provider.of<NewComingProvider>(context);
+    newComingProvider.getNewComing();
+
     Widget bottomNavbar() {
       return Container(
         margin: const EdgeInsets.only(top: 0),
@@ -150,11 +164,11 @@ class _MainPageState extends State<MainPage> {
       return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
-          children: [
-            MovieShowCard(),
-            MovieShowCardEternal(),
-            MovieShowCardShangChi(),
-          ],
+          children: nowPlayingProvider.nowPlaying
+              .map(
+                (nowPlaying) => MovieShowCard(nowPlaying),
+              )
+              .toList(),
         ),
       );
     }
@@ -178,16 +192,18 @@ class _MainPageState extends State<MainPage> {
     }
 
     Widget listActors() {
-      return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            PopularActor1(),
-            PopularActor2(),
-            PopularActor3(),
-            PopularActor4(),
-          ],
+      return Container(
+        margin: EdgeInsets.only(bottom: 8),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: castProvider.popularCast
+                .map(
+                  (popularCast) => PopularActor(popularCast),
+                )
+                .toList(),
+          ),
         ),
       );
     }
@@ -232,10 +248,11 @@ class _MainPageState extends State<MainPage> {
 
     Widget listPopularMovie() {
       return Column(
-        children: [
-          CardPopularMovieOne(),
-          CardPopularMovieTwo(),
-        ],
+        children: popularMovieProvider.popularMovie
+            .map(
+              (popularMovie) => CardPopularMovieOne(popularMovie),
+            )
+            .toList(),
       );
     }
 

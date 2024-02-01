@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:movie_filmku/providers/new_coming_provider.dart';
+import 'package:movie_filmku/providers/popular_cast_provider.dart';
 import 'package:movie_filmku/theme.dart';
 import 'package:movie_filmku/widget/actors_widget.dart';
 import 'package:movie_filmku/widget/new_comming_widget.dart';
+import 'package:provider/provider.dart';
 
 class ExploreMovie extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    CastProvider castProvider = Provider.of<CastProvider>(context);
+    NewComingProvider newComingProvider =
+        Provider.of<NewComingProvider>(context);
+
     Widget header() {
       return Container(
         margin: EdgeInsets.only(
@@ -19,7 +26,7 @@ class ExploreMovie extends StatelessWidget {
             Column(
               children: [
                 Text(
-                  'Discover Great\nMovies',
+                  'Discover\nGreat Movies',
                   style: anotherTextStyle.copyWith(
                     fontSize: 22,
                     fontWeight: semiBold,
@@ -129,23 +136,19 @@ class ExploreMovie extends StatelessWidget {
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
-            children: [
-              PopularActor1(),
-              PopularActor2(),
-              PopularActor3(),
-              PopularActor4(),
-            ],
+            children: castProvider.popularCast
+                .map(
+                  (popularCast) => PopularActor(popularCast),
+                )
+                .toList(),
           ),
         ),
       );
     }
 
-    Widget newComing() {
+    Widget newComing(NewComingProvider newComingProvider) {
       return Container(
-        margin: EdgeInsets.only(
-          left: defaultMargin,
-          right: defaultMargin,
-        ),
+        margin: EdgeInsets.only(left: defaultMargin, right: defaultMargin),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -157,27 +160,19 @@ class ExploreMovie extends StatelessWidget {
                 fontWeight: regular,
               ),
             ),
-            SizedBox(
-              height: 8,
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      NewMovieOne(),
-                      NewMovieTwo(),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Row(
-                    children: [
-                      NewMovieThree(),
-                      NewMovieFour(),
-                    ],
-                  ),
-                ],
+            SizedBox(height: 8),
+            Container(
+              height: 300, // Sesuaikan tinggi sesuai kebutuhan
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                ),
+                itemCount: newComingProvider.newComing.length,
+                itemBuilder: (context, index) {
+                  return NewMovieOne(newComingProvider.newComing[index]);
+                },
               ),
             ),
           ],
@@ -193,7 +188,7 @@ class ExploreMovie extends StatelessWidget {
           featuredMovie(),
           actors(),
           listActors(),
-          newComing(),
+          newComing(newComingProvider),
         ],
       ),
     );

@@ -3,15 +3,18 @@ import 'package:movie_filmku/theme.dart';
 import 'package:movie_filmku/widget/cast_list_widget.dart';
 
 class DetailMoviePage extends StatelessWidget {
-  const DetailMoviePage({Key? key}) : super(key: key);
+  final dynamic movie;
+  DetailMoviePage(this.movie);
 
   @override
   Widget build(BuildContext context) {
+    double nowRated = double.parse(movie.voteAverage.toStringAsFixed(1));
+
     Widget header() {
       return Stack(
         children: [
-          Image.asset(
-            'assets/detail_spiderman.png',
+          Image.network(
+            'https://image.tmdb.org/t/p/w500/${movie.posterPath}',
             width: double.infinity,
             fit: BoxFit.cover,
           ),
@@ -41,8 +44,8 @@ class DetailMoviePage extends StatelessWidget {
             ),
           ),
           Positioned(
-            bottom: 110,
-            left: 160,
+            bottom: 250,
+            left: 170,
             child: Column(
               children: [
                 Align(
@@ -80,18 +83,42 @@ class DetailMoviePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Cast',
-              style: TextStyle(
-                fontFamily: 'Merriweather',
-                color: primaryTextColor,
-                fontSize: 16,
-                fontWeight: bold,
-              ),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    "Popular",
+                    style: TextStyle(
+                      fontFamily: 'Merriweather',
+                      color: primaryTextColor,
+                      fontSize: 16,
+                      fontWeight: bold,
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(
+                      left: 8), // Adjust the margin as needed
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100),
+                    border: Border.all(
+                      width: 0.5,
+                      color: Colors.white,
+                    ),
+                  ),
+                  child: Text(
+                    "See more",
+                    style: primaryTextStyle.copyWith(
+                      fontSize: 10,
+                      color: primaryTextColor,
+                    ),
+                  ),
+                ),
+              ],
             ),
-            SizedBox(
-              height: 16,
-            ),
+            SizedBox(height: 16),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -133,11 +160,13 @@ class DetailMoviePage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Spiderman: No Way\nHome',
+                          movie.originalTitle,
                           style: primaryTextStyle.copyWith(
                             fontSize: 20,
                             fontWeight: semiBold,
                           ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 8),
                         Container(
@@ -152,7 +181,7 @@ class DetailMoviePage extends StatelessWidget {
                               const SizedBox(width: 4),
                               Expanded(
                                 child: Text(
-                                  '9.1/10 IMDb',
+                                  '${nowRated.toString()}/10 IMDb',
                                   style: primaryTextStyle.copyWith(
                                     fontSize: 12,
                                   ),
@@ -194,7 +223,7 @@ class DetailMoviePage extends StatelessWidget {
                     height: 8,
                   ),
                   Text(
-                    'With Spider-Man\'s identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear, forcing Peter to discover what it truly means to be Spider-Man.',
+                    movie.overview,
                     style: secondaryTextStyle.copyWith(
                       fontSize: 12,
                       fontWeight: regular,

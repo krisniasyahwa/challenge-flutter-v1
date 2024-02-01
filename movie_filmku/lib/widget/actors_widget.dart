@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:movie_filmku/models/popular_cast_model.dart';
 import 'package:movie_filmku/theme.dart';
 
-class PopularActor1 extends StatelessWidget {
+class PopularActor extends StatelessWidget {
+  final CastModel popularCast;
+  PopularActor(this.popularCast);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -13,8 +17,8 @@ class PopularActor1 extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(100),
-              child: Image.asset(
-                'assets/image_actor.png',
+              child: Image.network(
+                'https://image.tmdb.org/t/p/w500/${popularCast.profilePath}',
                 width: 60,
                 height: 60,
                 fit: BoxFit.cover,
@@ -26,7 +30,7 @@ class PopularActor1 extends StatelessWidget {
             SizedBox(
               width: 60,
               child: Text(
-                'Mannie',
+                popularCast.name,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
